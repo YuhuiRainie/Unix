@@ -5,28 +5,40 @@ our @argument = qw(-a -m -t -s -n);
 
 if (checkArgument() == 1){
   if ($ARGV[0] eq '-a'){
-    open (INFILE, $ARGV[1]) or die "An input file is required as argument\n";
+    checkIfFileExsit();
     displaySortedString();
   }
    if ($ARGV[0] eq '-m'){
-     open (INFILE, $ARGV[1]) or die "An input file is required as argument\n";
+     checkIfFileExsit();
     displayTotalMemorySize();
   }
    if ($ARGV[0] eq '-t'){
-     open (INFILE, $ARGV[1]) or die "An input file is required as argument\n";
+     checkIfFileExsit();
     displayCPUseconds();
   }
    if ($ARGV[0] eq '-n'){
-     open (INFILE, $ARGV[1]) or die "An input file is required as argument\n";
+     checkIfFileExsit();
     displayMyname();
   }
   if ($ARGV[0] eq '-s'){
-    open (INFILE, $ARGV[2]) or die "An input file is required as argument\n";
+    open (INFILE, $ARGV[2]);
+    if (! -e $ARGV[2]){
+    print "file is not exsits!\n";
+    exit;
+  }
+  elsif (! -r $ARGV[2]){
+    print "file is not readable!\n";
+    exit;
+  }
+  elsif (! -s $ARGV[2]){
+    print "File is empty \n";
+    exit;
+  }
     displayMemoryMeetThreshold();
   }
 }
 elsif(checkArgument() == 0){
-print "displaytasks.pl $ARGV[0]\n";
+print "displaytasks.pl @ARGV\n";
 }
 
 # #########################
@@ -40,6 +52,18 @@ sub checkArgument{
   }
   
   return $bool;
+}
+
+sub checkIfFileExsit{
+   open (INFILE, $ARGV[1]);
+  if (! -e $ARGV[1]){
+    print "file is not exsits!\n";
+    exit;
+  }
+  elsif (! -r $ARGV[1]){
+    print "file is not readable!\n";
+    exit;
+  }
 }
 
 sub checkIfFileEmpty{
@@ -72,6 +96,7 @@ while( my $row = <INFILE>)
 }
 else{
   print "No task found!\n";
+  
 }
 
 }
@@ -95,6 +120,7 @@ print "Total memory size: $totalMemory KB \n";
 }
 else{
   print "No memory used\n";
+  
 }
 }
 
@@ -117,6 +143,7 @@ print "Total CPU seconds: $totalCPUseconds seconds \n";
 }
 else{
   print "No CPU time used\n";
+  
 }
 }
 sub displayMemoryMeetThreshold{
@@ -132,7 +159,7 @@ while (my $row = <INFILE>)
 
 }
 if ($ifHasMemoryMeetThreshold == 0){
-  print "No tasks with the specified memory size ";
+  print "No tasks with the specified memory size \n";
 }
 
 
